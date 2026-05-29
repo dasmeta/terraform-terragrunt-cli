@@ -2,11 +2,12 @@ module "root_generator" {
   source = "./modules/root-generator"
 
   generated_dir       = var.targetdir
-  generated_by_module = "dasmeta/terraform-terragrunt-cli"
+  generated_by_module = "dasmeta/terragrunt/cli"
 }
 
 module "terraform_setups" {
-  source = "../terraform-renderer-generic"
+  source  = "dasmeta/generic/renderer"
+  version = "1.0.0"
 
   for_each = local.units
 
@@ -34,7 +35,7 @@ module "terraform_setups" {
     backend = each.value.terraform_backend
   }
   provider_default_tags = var.provider_default_tags
-  generated_by_module   = "dasmeta/terraform-terragrunt-cli"
+  generated_by_module   = "dasmeta/terragrunt/cli"
 }
 
 module "unit_generators" {
@@ -47,5 +48,5 @@ module "unit_generators" {
   unit_name           = each.value.name
   unit_description    = each.value.description
   linked_unit_paths   = each.value.linked_workspaces
-  generated_by_module = "dasmeta/terraform-terragrunt-cli"
+  generated_by_module = "dasmeta/terragrunt/cli"
 }
