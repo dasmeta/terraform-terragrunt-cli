@@ -16,7 +16,6 @@ output "unit_paths" {
 output "generated_files" {
   value = sort(flatten(concat(
     module.root_generator.generated_files,
-    [for _, setup in module.terraform_setups : setup.generated_files],
     [for _, generator in module.unit_generators : generator.generated_files],
   )))
   description = "Generated file paths written by the Terragrunt driver."

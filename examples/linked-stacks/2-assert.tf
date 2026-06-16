@@ -8,11 +8,7 @@ locals {
     ["./output/root.hcl"],
     flatten([
       for unit_path in local.expected_unit_paths : [
-        "./output/${unit_path}/README.md",
-        "./output/${unit_path}/main.tf",
-        "./output/${unit_path}/outputs.tf",
         "./output/${unit_path}/terragrunt.hcl",
-        "./output/${unit_path}/versions.tf",
       ]
     ])
   ))
@@ -23,28 +19,13 @@ data "local_file" "root_hcl" {
   depends_on = [module.this]
 }
 
-data "local_file" "module_b_main_tf" {
-  filename   = "${path.module}/output/module-b/main.tf"
-  depends_on = [module.this]
-}
-
-data "local_file" "module_b_outputs_tf" {
-  filename   = "${path.module}/output/module-b/outputs.tf"
-  depends_on = [module.this]
-}
-
 data "local_file" "module_b_terragrunt_hcl" {
   filename   = "${path.module}/output/module-b/terragrunt.hcl"
   depends_on = [module.this]
 }
 
-data "local_file" "module_a_versions_tf" {
-  filename   = "${path.module}/output/module-a/versions.tf"
-  depends_on = [module.this]
-}
-
-data "local_file" "module_b_versions_tf" {
-  filename   = "${path.module}/output/module-b/versions.tf"
+data "local_file" "module_a_terragrunt_hcl" {
+  filename   = "${path.module}/output/module-a/terragrunt.hcl"
   depends_on = [module.this]
 }
 
@@ -73,6 +54,7 @@ check "linked_unit_declares_terragrunt_dependency" {
   assert {
     condition = alltrue([
       strcontains(data.local_file.module_b_terragrunt_hcl.content, "find_in_parent_folders(\"root.hcl\")"),
+      strcontains(data.local_file.module_b_terragrunt_hcl.content, "dependency \"module_a\""),
       strcontains(data.local_file.module_b_terragrunt_hcl.content, "dependencies"),
       strcontains(data.local_file.module_b_terragrunt_hcl.content, "../module-a"),
     ])
@@ -80,26 +62,26 @@ check "linked_unit_declares_terragrunt_dependency" {
   }
 }
 
-check "linked_unit_uses_remote_state_for_interpolations" {
+check "linked_unit_uses_dependency_outputs_for_interpolations" {
   assert {
     condition = alltrue([
-      strcontains(data.local_file.module_b_main_tf.content, "terraform_remote_state"),
-      strcontains(data.local_file.module_b_main_tf.content, "module-a"),
-      strcontains(data.local_file.module_b_main_tf.content, "outputs.results[\"first-string-variable\"]"),
-      strcontains(data.local_file.module_b_outputs_tf.content, "value = module.this"),
+      strcontains(data.local_file.module_b_terragrunt_hcl.content, "source = \"tfr:///dasmeta/empty/null?version=1.2.2\""),
+      strcontains(data.local_file.module_b_terragrunt_hcl.content, "inputs ="),
+      strcontains(data.local_file.module_b_terragrunt_hcl.content, "dependency.module_a.outputs[\\\"first-string-variable\\\"]"),
+      strcontains(data.local_file.module_b_terragrunt_hcl.content, "\"second-bool\":true"),
     ])
-    error_message = "The linked Terraform unit does not render backend-aware output wiring for module-a interpolations."
+    error_message = "The linked Terragrunt unit does not render native dependency output wiring for module-a interpolations."
   }
 }
 
-check "linked_units_render_isolated_backend_state" {
+check "linked_units_render_isolated_remote_state" {
   assert {
     condition = alltrue([
-      strcontains(data.local_file.module_a_versions_tf.content, "backend \"local\""),
-      strcontains(data.local_file.module_b_versions_tf.content, "backend \"local\""),
-      strcontains(data.local_file.module_a_versions_tf.content, "path = \"./state/module-a/terraform.tfstate\""),
-      strcontains(data.local_file.module_b_versions_tf.content, "path = \"./state/module-b/terraform.tfstate\""),
+      strcontains(data.local_file.module_a_terragrunt_hcl.content, "remote_state"),
+      strcontains(data.local_file.module_b_terragrunt_hcl.content, "remote_state"),
+      strcontains(data.local_file.module_a_terragrunt_hcl.content, "\"path\":\"./state/module-a/terraform.tfstate\""),
+      strcontains(data.local_file.module_b_terragrunt_hcl.content, "\"path\":\"./state/module-b/terraform.tfstate\""),
     ])
-    error_message = "Linked units do not render isolated backend state paths from the global backend default."
+    error_message = "Linked units do not render isolated Terragrunt remote_state paths from the global backend default."
   }
 }

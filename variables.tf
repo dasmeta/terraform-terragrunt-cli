@@ -18,28 +18,25 @@ variable "terraform_version" {
 
 variable "terraform_backend" {
   type = object({
-    name    = string
-    configs = optional(any, {})
+    name    = string            # Terraform backend type applied to generated Terragrunt units by default.
+    configs = optional(any, {}) # Backend configuration arguments applied to generated Terragrunt units by default.
   })
-  default     = { name = null, configs = null }
+  default     = { name = null, configs = null } # Null backend values mean no default backend block is rendered.
   description = "Optional default Terraform backend configuration applied to generated units."
 }
 
-variable "provider_custom_var_blocks" {
-  type        = any
-  default     = {}
-  description = "Optional provider-specific custom blocks passed to the shared renderer."
-}
-
-variable "provider_default_tags" {
+variable "provider_configs" {
   type = any
   default = {
     aws = {
-      enabled      = true
-      managed_by   = "terraform"
-      applied_from = "terragrunt"
-      extra_tags   = {}
+      default_tags = {
+        enabled      = true         # Enables automatic aws.default_tags rendering for generated units.
+        managed_by   = "terraform"  # Value used for the ManagedBy default tag.
+        applied_from = "terragrunt" # Value used for the AppliedFrom default tag.
+        extra_tags   = {}           # Additional default tags merged into generated aws.default_tags content.
+      }
+      custom_var_blocks = {} # Optional additional provider-specific custom blocks merged into rendered provider configuration.
     }
   }
-  description = "Optional provider-specific default tag settings passed to the shared renderer."
+  description = "Optional grouped provider-specific configuration rendered into generated Terragrunt helper files."
 }

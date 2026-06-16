@@ -1,0 +1,19 @@
+## ${note}
+
+terraform {
+%{ if length(providers) > 0 ~}
+  required_providers {
+%{ for key, value in providers ~}
+    ${value.name} = {
+      source  = "${value.source}"
+      version = "${value.version}"
+%{ if value.configuration_aliases != "[]" ~}
+      configuration_aliases = ${value.configuration_aliases}%{ endif ~}
+
+    }
+%{ endfor ~}
+  }
+%{ endif ~}
+
+  required_version = "${terraform_version}"
+}
