@@ -30,6 +30,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_generated_by_module"></a> [generated\_by\_module](#input\_generated\_by\_module) | Module identifier written into generated files. | `string` | n/a | yes |
 | <a name="input_generated_dir"></a> [generated\_dir](#input\_generated\_dir) | Root output directory where the shared Terragrunt root config is written. | `string` | n/a | yes |
+| <a name="input_note"></a> [note](#input\_note) | Note/comment text written at the top of generated Terragrunt root files. | `string` | `"This file and its content are generated based on config, pleas check README.md for more details"` | no |
 
 ## Outputs
 

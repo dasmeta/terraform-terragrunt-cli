@@ -10,7 +10,9 @@ Generates units from shared `_.yaml` content and nested YAML structure.
 
 ## Providers
 
-No providers.
+| Name | Version |
+|------|---------|
+| <a name="provider_local"></a> [local](#provider\_local) | 2.9.0 |
 
 ## Modules
 
@@ -20,7 +22,9 @@ No providers.
 
 ## Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [local_file.nested_module_b_terragrunt_hcl](https://registry.terraform.io/providers/hashicorp/local/latest/docs/data-sources/file) | data source |
 
 ## Inputs
 

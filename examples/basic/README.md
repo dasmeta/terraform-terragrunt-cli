@@ -10,7 +10,9 @@ Generates two Terragrunt-managed units from two simple YAML module files.
 
 ## Providers
 
-No providers.
+| Name | Version |
+|------|---------|
+| <a name="provider_local"></a> [local](#provider\_local) | 2.9.0 |
 
 ## Modules
 
@@ -20,7 +22,9 @@ No providers.
 
 ## Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [local_file.module_a_terragrunt_hcl](https://registry.terraform.io/providers/hashicorp/local/latest/docs/data-sources/file) | data source |
 
 ## Inputs
 
