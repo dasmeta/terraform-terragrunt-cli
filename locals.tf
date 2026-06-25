@@ -1,46 +1,6 @@
 locals {
-  root_shared_yaml = try(file("${var.yamldir}/_.yaml"), "")
-
-  folders_shared_yaml = {
-    for file in fileset(var.yamldir, "**/*/_.yaml") :
-    replace(file, "/_.yaml$/", "") => try(file("${var.yamldir}/${file}"), "")
-    if length(regexall("\\.terraform", file)) == 0
-  }
-
-  yaml_files_raw = {
-    for file in fileset(var.yamldir, "**/*.yaml") :
-    replace(file, "/.yaml$/", "") => try(
-      yamldecode(
-        join(
-          "\n",
-          concat(
-            [local.root_shared_yaml],
-            [for folder_name, shared_content in local.folders_shared_yaml : shared_content if strcontains(file, folder_name)],
-            [file("${var.yamldir}/${file}")]
-          )
-        )
-      ),
-      {}
-    )
-    if length(regexall("\\.terraform", file)) == 0 && length(regexall("(^|/)_\\.yaml$", file)) == 0
-  }
-
-  yaml_files = {
-    for key, item in local.yaml_files_raw :
-    key => item
-    if try(item.source, null) != null && try(item.version, null) != null
-  }
-
-  auto_detected_linked_workspaces = {
-    for path, item in local.yaml_files :
-    path => distinct([
-      for match in flatten([
-        for content in concat([try(item.variables, {})], try(item.providers, [])) :
-        regexall("\\$${([^}]+)}", jsonencode(content))
-      ]) :
-      replace(match, "/(\\..+|\\[.+)/", "")
-    ])
-  }
+  yaml_files                      = coalesce(var.yaml_files, try(module.infra_yaml_fetched[0].yaml_files, {}))
+  auto_detected_linked_workspaces = coalesce(var.auto_detected_linked_workspaces, try(module.infra_yaml_fetched[0].auto_detected_linked_workspaces, {}))
 
   units = {
     for path, item in local.yaml_files :
@@ -78,6 +38,10 @@ locals {
       output = {
         enabled   = try(item.output.enabled, true)
         sensitive = try(item.output.sensitive, null)
+      }
+      mock_outputs = {
+        enabled = try(item.mock_outputs.enabled, null) == null ? var.mock_outputs_enabled : item.mock_outputs.enabled
+        values  = try(item.mock_outputs.values, {})
       }
       raw = item
     }

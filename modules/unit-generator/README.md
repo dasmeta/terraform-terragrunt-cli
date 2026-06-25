@@ -32,6 +32,7 @@ No modules.
 | <a name="input_generated_by_module"></a> [generated\_by\_module](#input\_generated\_by\_module) | Module identifier written into generated files. | `string` | n/a | yes |
 | <a name="input_generated_dir"></a> [generated\_dir](#input\_generated\_dir) | The directory where generated unit folders are written. | `string` | n/a | yes |
 | <a name="input_linked_unit_paths"></a> [linked\_unit\_paths](#input\_linked\_unit\_paths) | Relative linked unit paths used for Terragrunt orchestration ordering. | `list(string)` | `[]` | no |
+| <a name="input_mock_outputs"></a> [mock\_outputs](#input\_mock\_outputs) | Terragrunt dependency mock\_outputs configuration for linked units that consume dependency outputs. | <pre>object({<br/>    enabled = bool<br/>    values  = optional(any, {})<br/>  })</pre> | <pre>{<br/>  "enabled": true,<br/>  "values": {}<br/>}</pre> | no |
 | <a name="input_module_providers"></a> [module\_providers](#input\_module\_providers) | Optional provider configuration declarations from the shared YAML model. | `any` | `[]` | no |
 | <a name="input_module_source"></a> [module\_source](#input\_module\_source) | Terraform module source from the shared YAML model. | `string` | n/a | yes |
 | <a name="input_module_vars"></a> [module\_vars](#input\_module\_vars) | Module input variables from the shared YAML model. | `any` | `{}` | no |

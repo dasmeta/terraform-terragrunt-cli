@@ -69,6 +69,9 @@ check "linked_unit_uses_dependency_outputs_for_interpolations" {
       strcontains(data.local_file.module_b_terragrunt_hcl.content, "inputs ="),
       strcontains(data.local_file.module_b_terragrunt_hcl.content, "dependency.module_a.outputs[\\\"first-string-variable\\\"]"),
       strcontains(data.local_file.module_b_terragrunt_hcl.content, "\"second-bool\":true"),
+      strcontains(data.local_file.module_b_terragrunt_hcl.content, "mock_outputs"),
+      strcontains(data.local_file.module_b_terragrunt_hcl.content, "first-string-variable"),
+      strcontains(data.local_file.module_b_terragrunt_hcl.content, "mock_outputs_allowed_terraform_commands"),
     ])
     error_message = "The linked Terragrunt unit does not render native dependency output wiring for module-a interpolations."
   }
@@ -81,6 +84,8 @@ check "linked_units_render_isolated_remote_state" {
       strcontains(data.local_file.module_b_terragrunt_hcl.content, "remote_state"),
       strcontains(data.local_file.module_a_terragrunt_hcl.content, "\"path\":\"./state/module-a/terraform.tfstate\""),
       strcontains(data.local_file.module_b_terragrunt_hcl.content, "\"path\":\"./state/module-b/terraform.tfstate\""),
+      strcontains(data.local_file.module_a_terragrunt_hcl.content, "backend \"local\" {}"),
+      strcontains(data.local_file.module_b_terragrunt_hcl.content, "backend \"local\" {}"),
     ])
     error_message = "Linked units do not render isolated Terragrunt remote_state paths from the global backend default."
   }

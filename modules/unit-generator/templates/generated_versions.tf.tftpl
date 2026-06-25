@@ -1,6 +1,9 @@
 ## ${note}
 
 terraform {
+%{ if backend_name != null && backend_name != "" ~}
+  backend "${backend_name}" {}
+%{ endif ~}
 %{ if length(providers) > 0 ~}
   required_providers {
 %{ for key, value in providers ~}

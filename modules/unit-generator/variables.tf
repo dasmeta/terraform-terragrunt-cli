@@ -59,6 +59,18 @@ variable "terraform_backend" {
   description = "Optional backend configuration rendered as a Terragrunt remote_state block."
 }
 
+variable "mock_outputs" {
+  type = object({
+    enabled = bool
+    values  = optional(any, {})
+  })
+  default = {
+    enabled = true
+    values  = {}
+  }
+  description = "Terragrunt dependency mock_outputs configuration for linked units that consume dependency outputs."
+}
+
 variable "provider_configs" {
   type        = any
   default     = {}

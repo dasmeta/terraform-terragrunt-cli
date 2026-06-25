@@ -12,6 +12,11 @@ terraform {
 %{ for item in dependencies ~}
 dependency "${item.name}" {
   config_path = "${item.config_path}"
+%{ if length(item.mock_outputs) > 0 ~}
+
+  mock_outputs = ${replace(replace(jsonencode(item.mock_outputs), "\\u003c", "<"), "\\u003e", ">")}
+  mock_outputs_allowed_terraform_commands = ["validate", "plan"]
+%{ endif ~}
 }
 
 %{ endfor ~}

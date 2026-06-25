@@ -44,8 +44,38 @@ locals {
           )
         )
       )
+      mock_outputs = try(local.dependency_mock_outputs[linked_unit_path], {})
     }
   ]
+
+  linked_reference_expressions = distinct(flatten([
+    for var_value in values(var.module_vars) :
+    [for match in regexall("\\$\\{([^}]+)\\}", jsonencode(var_value)) : replace(match[0], "\\\"", "\"")]
+  ]))
+
+  dependency_mock_output_keys = {
+    for linked_path in var.linked_unit_paths :
+    linked_path => distinct(compact(concat(
+      [
+        for expression in local.linked_reference_expressions :
+        trimsuffix(trimprefix(expression, "${linked_path}[\""), "\"]")
+        if startswith(expression, "${linked_path}[\"")
+      ],
+      [
+        for expression in local.linked_reference_expressions :
+        trimprefix(expression, "${linked_path}.")
+        if startswith(expression, "${linked_path}.") && !can(regex("^\\[", trimprefix(expression, "${linked_path}.")))
+      ]
+    )))
+  }
+
+  dependency_mock_outputs = var.mock_outputs.enabled ? {
+    for linked_path, output_keys in local.dependency_mock_output_keys :
+    linked_path => merge(
+      { for output_key in output_keys : output_key => "mock-${output_key}" },
+      try(var.mock_outputs.values[linked_path], {})
+    )
+  } : {}
 
   linked_setup_mapping = {
     for item in local.linked_unit_configs :
@@ -192,6 +222,7 @@ locals {
   versions_content = templatefile("${path.module}/templates/generated_versions.tf.tftpl", {
     note              = local.note
     terraform_version = var.terraform_version
+    backend_name      = try(var.terraform_backend.name, null)
     providers = [for group in local.module_providers_grouped : {
       name                  = group[0].name
       version               = group[0].version
@@ -217,7 +248,7 @@ locals {
         dependencies        = local.linked_unit_configs
         inputs              = local.module_input_entries
         remote_state        = try(var.terraform_backend.name, null) == null ? null : var.terraform_backend
-        generate_versions   = length(var.module_providers) > 0 || var.terraform_version != ""
+        generate_versions   = length(var.module_providers) > 0 || var.terraform_version != "" || try(var.terraform_backend.name, null) != null
         versions_content    = local.versions_content
         generate_providers  = length(local.providers_rendered) > 0
         providers_content   = local.providers_content

@@ -21,6 +21,9 @@ rendering Terragrunt-native units instead of Terraform root modules.
   interpolation references
 - renders native Terragrunt `dependency` and `dependencies` blocks for linked
   units
+- generates `mock_outputs` for linked output references so `plan` and `validate`
+  work before dependencies are applied; mocks are restricted to those commands so
+  `apply` always uses real dependency state
 - supports a root-level backend default with per-unit YAML override and isolated
   state identity per generated unit
 
@@ -93,7 +96,15 @@ terraform -chdir=examples/linked-stacks init -input=false
 terraform -chdir=examples/linked-stacks apply -auto-approve
 cd examples/linked-stacks/output && terragrunt list --format tree --dag --dependencies
 cd examples/linked-stacks/output && terragrunt dag graph
+cd examples/linked-stacks/output && terragrunt run --all -- validate
+cd examples/linked-stacks/output && terragrunt run --all -- plan
+cd examples/linked-stacks/output && terragrunt run --all -- apply -auto-approve
 ```
+
+`terragrunt run --all apply` applies units in dependency order: producers such as
+`module-a` run before consumers such as `module-b`. Use `mock_outputs` only for
+bootstrap `plan`/`validate`; apply resolves real outputs after dependencies are
+applied in the same run.
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -109,6 +120,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_infra_yaml_fetched"></a> [infra\_yaml\_fetched](#module\_infra\_yaml\_fetched) | dasmeta/generic/renderer//modules/infra-yaml-fetched | 1.1.0 |
 | <a name="module_root_generator"></a> [root\_generator](#module\_root\_generator) | ./modules/root-generator | n/a |
 | <a name="module_unit_generators"></a> [unit\_generators](#module\_unit\_generators) | ./modules/unit-generator | n/a |
 
@@ -120,10 +132,13 @@ No resources.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_auto_detected_linked_workspaces"></a> [auto\_detected\_linked\_workspaces](#input\_auto\_detected\_linked\_workspaces) | Optional pre-fetched linked workspace map. Required together with yaml\_files when bypassing the internal infra-yaml-fetched module. | `any` | `null` | no |
+| <a name="input_mock_outputs_enabled"></a> [mock\_outputs\_enabled](#input\_mock\_outputs\_enabled) | Whether Terragrunt dependency mock\_outputs are enabled by default for consumer units. Individual unit YAML can override this with mock\_outputs.enabled. | `bool` | `true` | no |
 | <a name="input_provider_configs"></a> [provider\_configs](#input\_provider\_configs) | Optional grouped provider-specific configuration rendered into generated Terragrunt helper files. | `any` | <pre>{<br/>  "aws": {<br/>    "custom_var_blocks": {},<br/>    "default_tags": {<br/>      "applied_from": "terragrunt",<br/>      "enabled": true,<br/>      "extra_tags": {},<br/>      "managed_by": "terraform"<br/>    }<br/>  }<br/>}</pre> | no |
 | <a name="input_targetdir"></a> [targetdir](#input\_targetdir) | The directory where generated Terragrunt units will be written. | `string` | `"./generated/units"` | no |
 | <a name="input_terraform_backend"></a> [terraform\_backend](#input\_terraform\_backend) | Optional default Terraform backend configuration applied to generated units. | <pre>object({<br/>    name    = string            # Terraform backend type applied to generated Terragrunt units by default.<br/>    configs = optional(any, {}) # Backend configuration arguments applied to generated Terragrunt units by default.<br/>  })</pre> | <pre>{<br/>  "configs": null,<br/>  "name": null<br/>}</pre> | no |
 | <a name="input_terraform_version"></a> [terraform\_version](#input\_terraform\_version) | The Terraform version constraint emitted into generated unit files. | `string` | `"~> 1.3"` | no |
+| <a name="input_yaml_files"></a> [yaml\_files](#input\_yaml\_files) | Optional pre-fetched workspace YAML. When set, skips the internal infra-yaml-fetched module (required when this driver is used as a nested module with a local source). | `any` | `null` | no |
 | <a name="input_yamldir"></a> [yamldir](#input\_yamldir) | The directory where YAML module definitions are located. | `string` | `"."` | no |
 
 ## Outputs
