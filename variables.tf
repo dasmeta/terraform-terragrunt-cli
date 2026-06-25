@@ -25,6 +25,12 @@ variable "terraform_backend" {
   description = "Optional default Terraform backend configuration applied to generated units."
 }
 
+variable "mock_outputs_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether Terragrunt dependency mock_outputs are enabled by default for consumer units. Individual unit YAML can override this with mock_outputs.enabled."
+}
+
 variable "provider_configs" {
   type = any
   default = {

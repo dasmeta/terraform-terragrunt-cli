@@ -1,3 +1,11 @@
+module "infra_yaml_fetched" {
+  #checkov:skip=CKV_TF_1: Registry module source uses version pin (CKV_TF_2)
+  source  = "dasmeta/generic/renderer//modules/infra-yaml-fetched"
+  version = "1.1.1"
+
+  yamldir = var.yamldir
+}
+
 module "root_generator" {
   source = "./modules/root-generator"
 
@@ -21,6 +29,7 @@ module "unit_generators" {
   linked_unit_paths   = each.value.linked_workspaces
   terraform_version   = var.terraform_version
   terraform_backend   = each.value.terraform_backend
+  mock_outputs        = each.value.mock_outputs
   provider_configs    = var.provider_configs
   generated_by_module = "dasmeta/cli/terragrunt"
 }

@@ -7,3 +7,4 @@ crash.log
 examples/**/generated/
 examples/**/output/
 tests/
+.external_modules

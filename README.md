@@ -21,6 +21,9 @@ rendering Terragrunt-native units instead of Terraform root modules.
   interpolation references
 - renders native Terragrunt `dependency` and `dependencies` blocks for linked
   units
+- generates `mock_outputs` for linked output references so `plan` and `validate`
+  work before dependencies are applied; mocks are restricted to those commands so
+  `apply` always uses real dependency state
 - supports a root-level backend default with per-unit YAML override and isolated
   state identity per generated unit
 
@@ -93,7 +96,15 @@ terraform -chdir=examples/linked-stacks init -input=false
 terraform -chdir=examples/linked-stacks apply -auto-approve
 cd examples/linked-stacks/output && terragrunt list --format tree --dag --dependencies
 cd examples/linked-stacks/output && terragrunt dag graph
+cd examples/linked-stacks/output && terragrunt run --all -- validate
+cd examples/linked-stacks/output && terragrunt run --all -- plan
+cd examples/linked-stacks/output && terragrunt run --all -- apply -auto-approve
 ```
+
+`terragrunt run --all apply` applies units in dependency order: producers such as
+`module-a` run before consumers such as `module-b`. Use `mock_outputs` only for
+bootstrap `plan`/`validate`; apply resolves real outputs after dependencies are
+applied in the same run.
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -109,6 +120,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_infra_yaml_fetched"></a> [infra\_yaml\_fetched](#module\_infra\_yaml\_fetched) | dasmeta/generic/renderer//modules/infra-yaml-fetched | 1.1.1 |
 | <a name="module_root_generator"></a> [root\_generator](#module\_root\_generator) | ./modules/root-generator | n/a |
 | <a name="module_unit_generators"></a> [unit\_generators](#module\_unit\_generators) | ./modules/unit-generator | n/a |
 
@@ -120,6 +132,7 @@ No resources.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_mock_outputs_enabled"></a> [mock\_outputs\_enabled](#input\_mock\_outputs\_enabled) | Whether Terragrunt dependency mock\_outputs are enabled by default for consumer units. Individual unit YAML can override this with mock\_outputs.enabled. | `bool` | `true` | no |
 | <a name="input_provider_configs"></a> [provider\_configs](#input\_provider\_configs) | Optional grouped provider-specific configuration rendered into generated Terragrunt helper files. | `any` | <pre>{<br/>  "aws": {<br/>    "custom_var_blocks": {},<br/>    "default_tags": {<br/>      "applied_from": "terragrunt",<br/>      "enabled": true,<br/>      "extra_tags": {},<br/>      "managed_by": "terraform"<br/>    }<br/>  }<br/>}</pre> | no |
 | <a name="input_targetdir"></a> [targetdir](#input\_targetdir) | The directory where generated Terragrunt units will be written. | `string` | `"./generated/units"` | no |
 | <a name="input_terraform_backend"></a> [terraform\_backend](#input\_terraform\_backend) | Optional default Terraform backend configuration applied to generated units. | <pre>object({<br/>    name    = string            # Terraform backend type applied to generated Terragrunt units by default.<br/>    configs = optional(any, {}) # Backend configuration arguments applied to generated Terragrunt units by default.<br/>  })</pre> | <pre>{<br/>  "configs": null,<br/>  "name": null<br/>}</pre> | no |
