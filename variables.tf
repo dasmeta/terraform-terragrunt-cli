@@ -46,15 +46,3 @@ variable "provider_configs" {
   }
   description = "Optional grouped provider-specific configuration rendered into generated Terragrunt helper files."
 }
-
-variable "yaml_files" {
-  type        = any
-  default     = null
-  description = "Optional pre-fetched workspace YAML. When set, skips the internal infra-yaml-fetched module (required when this driver is used as a nested module with a local source)."
-}
-
-variable "auto_detected_linked_workspaces" {
-  type        = any
-  default     = null
-  description = "Optional pre-fetched linked workspace map. Required together with yaml_files when bypassing the internal infra-yaml-fetched module."
-}

@@ -1,12 +1,10 @@
 # Plan
 
 1. Add `module "infra_yaml_fetched"` to driver `main.tf` using registry source
-   `dasmeta/generic/renderer//modules/infra-yaml-fetched` `1.1.0`.
+   `dasmeta/generic/renderer//modules/infra-yaml-fetched` `1.1.1`.
 2. Replace duplicated YAML locals with `module.infra_yaml_fetched` outputs.
-3. Add optional `yaml_files` / `auto_detected_linked_workspaces` inputs for
-   nested local development.
-4. Extend unit generator with Terragrunt dependency `mock_outputs` support.
-5. Validate `basic`, `with-shared-configs`, and `linked-stacks` examples.
+3. Extend unit generator with Terragrunt dependency `mock_outputs` support.
+4. Validate `basic`, `with-shared-configs`, and `linked-stacks` examples.
 
 ## Validation
 

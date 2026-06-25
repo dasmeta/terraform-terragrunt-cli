@@ -11,10 +11,8 @@ Terragrunt-specific unit generation in this repository.
 
 ## What
 
-- call `infra-yaml-fetched` from registry version `1.1.0`
+- call `infra-yaml-fetched` from registry version `1.1.1`
 - remove duplicated YAML locals from the driver root module
-- accept optional pre-fetched `yaml_files` and `auto_detected_linked_workspaces`
-  for nested local module sources
 - keep Terragrunt-native unit generation, dependency blocks, and mock outputs
 
 ## Acceptance Criteria

@@ -1,6 +1,6 @@
 locals {
-  yaml_files                      = coalesce(var.yaml_files, try(module.infra_yaml_fetched[0].yaml_files, {}))
-  auto_detected_linked_workspaces = coalesce(var.auto_detected_linked_workspaces, try(module.infra_yaml_fetched[0].auto_detected_linked_workspaces, {}))
+  yaml_files                      = module.infra_yaml_fetched.yaml_files
+  auto_detected_linked_workspaces = module.infra_yaml_fetched.auto_detected_linked_workspaces
 
   units = {
     for path, item in local.yaml_files :
