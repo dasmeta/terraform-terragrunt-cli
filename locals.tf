@@ -1,6 +1,6 @@
 locals {
-  yaml_files                      = module.infra_yaml_fetched.yaml_files
-  auto_detected_linked_workspaces = module.infra_yaml_fetched.auto_detected_linked_workspaces
+  yaml_files                      = module.infra_yaml_loader.yaml_files
+  auto_detected_linked_workspaces = module.infra_yaml_loader.auto_detected_linked_workspaces
 
   units = {
     for path, item in local.yaml_files :
