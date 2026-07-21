@@ -120,7 +120,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_infra_yaml_loader"></a> [infra\_yaml\_loader](#module\_infra\_yaml\_loader) | dasmeta/generic/renderer//modules/infra-yaml-loader | 1.2.0 |
+| <a name="module_infra_yaml_loader"></a> [infra\_yaml\_loader](#module\_infra\_yaml\_loader) | dasmeta/generic/renderer//modules/infra-yaml-loader | 1.2.1 |
 | <a name="module_root_generator"></a> [root\_generator](#module\_root\_generator) | ./modules/root-generator | n/a |
 | <a name="module_unit_generators"></a> [unit\_generators](#module\_unit\_generators) | ./modules/unit-generator | n/a |
 

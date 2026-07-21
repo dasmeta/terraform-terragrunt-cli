@@ -11,7 +11,7 @@ Terragrunt-specific unit generation in this repository.
 
 ## What
 
-- call `infra-yaml-loader` from registry version `1.2.0`
+- call `infra-yaml-loader` from registry version `1.2.1`
 - remove duplicated YAML locals from the driver root module
 - keep Terragrunt-native unit generation, dependency blocks, and mock outputs
 
@@ -20,4 +20,5 @@ Terragrunt-specific unit generation in this repository.
 - driver root module uses `dasmeta/generic/renderer//modules/infra-yaml-loader`
 - duplicated YAML merge/filter locals are removed from `locals.tf`
 - linked terragrunt units support `mock_outputs` for validate/plan workflows
+- empty YAML files are ignored without loader evaluation failures
 - existing YAML examples continue to work without format changes
