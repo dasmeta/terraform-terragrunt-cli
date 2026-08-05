@@ -8,6 +8,9 @@ consumer interface intentionally close to `terraform-terramate-cli` so the
 multi-driver boundary can be validated across more than one local runtime while
 rendering Terragrunt-native units instead of Terraform root modules.
 
+Debugging this driver or a setup that consumes it? See [AGENTS.md](./AGENTS.md)
+for the symptom-to-cause table, validation recipes, and known traps.
+
 ## What It Does
 
 - reads multiple YAML files from a directory tree
@@ -110,7 +113,7 @@ applied in the same run.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.3 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.8 |
 
 ## Providers
 
@@ -120,7 +123,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_infra_yaml_loader"></a> [infra\_yaml\_loader](#module\_infra\_yaml\_loader) | dasmeta/generic/renderer//modules/infra-yaml-loader | 1.2.1 |
+| <a name="module_infra_yaml_loader"></a> [infra\_yaml\_loader](#module\_infra\_yaml\_loader) | dasmeta/generic/renderer//modules/infra-yaml-loader | 1.2.2 |
 | <a name="module_root_generator"></a> [root\_generator](#module\_root\_generator) | ./modules/root-generator | n/a |
 | <a name="module_unit_generators"></a> [unit\_generators](#module\_unit\_generators) | ./modules/unit-generator | n/a |
 

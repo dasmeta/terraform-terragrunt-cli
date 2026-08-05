@@ -67,8 +67,8 @@ check "linked_unit_uses_dependency_outputs_for_interpolations" {
     condition = alltrue([
       strcontains(data.local_file.module_b_terragrunt_hcl.content, "source = \"tfr:///dasmeta/empty/null?version=1.2.2\""),
       strcontains(data.local_file.module_b_terragrunt_hcl.content, "inputs ="),
-      strcontains(data.local_file.module_b_terragrunt_hcl.content, "dependency.module_a.outputs[\\\"first-string-variable\\\"]"),
-      strcontains(data.local_file.module_b_terragrunt_hcl.content, "\"second-bool\":true"),
+      strcontains(data.local_file.module_b_terragrunt_hcl.content, "dependency.module_a.outputs[\"first-string-variable\"]"),
+      strcontains(data.local_file.module_b_terragrunt_hcl.content, "second-bool = true"),
       strcontains(data.local_file.module_b_terragrunt_hcl.content, "mock_outputs"),
       strcontains(data.local_file.module_b_terragrunt_hcl.content, "first-string-variable"),
       strcontains(data.local_file.module_b_terragrunt_hcl.content, "mock_outputs_allowed_terraform_commands"),
