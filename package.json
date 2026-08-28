@@ -1,5 +1,5 @@
 {
-  "name": "terraform-terragrunt-cli",
+  "name": "app",
   "devDependencies": {
     "@commitlint/cli": "^17.0.3",
     "@commitlint/config-conventional": "^17.0.3",
